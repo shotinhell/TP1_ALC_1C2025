@@ -1,3 +1,16 @@
+# Carga de paquetes necesarios para graficar
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd # Para leer archivos
+import geopandas as gpd # Para hacer cosas geográficas
+import seaborn as sns # Para hacer plots lindos
+import networkx as nx # Construcción de la red en NetworkX
+import scipy
+
+# Leemos el archivo, retenemos aquellos museos que están en CABA, y descartamos aquellos que no tienen latitud y longitud
+museos = gpd.read_file('https://raw.githubusercontent.com/MuseosAbiertos/Leaflet-museums-OpenStreetMap/refs/heads/principal/data/export.geojson')
+barrios = gpd.read_file('https://cdn.buenosaires.gob.ar/datosabiertos/datasets/ministerio-de-educacion/barrios/barrios.geojson')
+
 def construye_adyacencia(D,m): 
     # Función que construye la matriz de adyacencia del grafo de museos
     # D matriz de distancias, m cantidad de links por nodo
@@ -11,10 +24,44 @@ def construye_adyacencia(D,m):
     return(A)
 
 def calculaLU(matriz):
-    # matriz es una matriz de NxN
-    # Retorna la factorización LU a través de una lista con dos matrices L y U de NxN.
-    # Completar! Have fun
+    n = matriz.shape[0]
+    m = matriz.shape[1]
+    L = np.eye(n,n)
+    U = matriz.copy()
+    if m != n:
+        print('La matriz no es cuadrada')
+        return
+    else:
+        for j in range(n):
+            for i in range(j + 1, n):
+                L[i, j] = U[i, j] / U[j, j]
+                U[i, :] = U[i, :] - L[i, j] * U[j, :]
+    return L, U
 
+def determinante(matriz):
+    _, U = calculaLU(matriz)
+    res = 1
+    for i in range(len(U)):
+        res *= U[i][i]
+    return res
+    #caso base 2x2
+    m = matriz.shape[1]
+    if m == 2:
+        return 
+    
+def inversa(matriz):
+    L, U = calculaLU(matriz)
+    n = matriz.shape[0]
+    I = np.size(n)
+    res = np.zeros_like(matriz)
+    for i in range(n):
+       e = I[:, i]
+       y = scipy.linalg.solve_triangular(L, e,)
+       x = scipy.linalg.solve_triangular(U, y)
+       res[:, i] = x
+       
+    return res
+    
 def calcula_matriz_C(A): 
     # Función para calcular la matriz de trancisiones C
     # A: Matriz de adyacencia
@@ -30,10 +77,11 @@ def calcula_pagerank(A,alfa):
     # d: coeficientes de damping
     # Retorna: Un vector p con los coeficientes de page rank de cada museo
     C = calcula_matriz_C(A)
-    N = ... # Obtenemos el número de museos N a partir de la estructura de la matriz A
-    M = ...
+    N = len(A) # Obtenemos el número de museos N a partir de la estructura de la matriz A
+    M = (1 - alfa) * C
     L, U = calculaLU(M) # Calculamos descomposición LU a partir de C y d
-    b = ... # Vector de 1s, multiplicado por el coeficiente correspondiente usando d y N.
+    b = np.ones(N)
+    b = (alfa/N) * b # Vector de 1s, multiplicado por el coeficiente correspondiente usando d y N.
     Up = scipy.linalg.solve_triangular(L,b,lower=True) # Primera inversión usando L
     p = scipy.linalg.solve_triangular(U,Up) # Segunda inversión usando U
     return p
