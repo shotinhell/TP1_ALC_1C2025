@@ -66,8 +66,12 @@ def calcula_matriz_C(A):
     # Función para calcular la matriz de trancisiones C
     # A: Matriz de adyacencia
     # Retorna la matriz C
-    Kinv = ... # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de A
-    C = ... # Calcula C multiplicando Kinv y A
+    K = np.zeros_like(A) # Inicializa matriz K con ceros, de la misma forma que A
+    for i in range(len(A)):
+        K[i][i] = sum(A[i][:]) # Suma los elementos de la fila i-ésima de A y lo asigna a la diagonal de K
+    Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de A
+    C = Kinv @ A # Calcula C multiplicando Kinv y A
+     # Calcula C multiplicando Kinv y A
     return C
 
     
@@ -88,13 +92,17 @@ def calcula_pagerank(A,alfa):
 
 def calcula_matriz_C_continua(D): 
     # Función para calcular la matriz de trancisiones C
-    # A: Matriz de adyacencia
+    # D: Matriz de adyacencia
     # Retorna la matriz C en versión continua
     D = D.copy()
     F = 1/D
     np.fill_diagonal(F,0)
-    Kinv = ... # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F 
-    C = ... # Calcula C multiplicando Kinv y F
+    K = np.zeros_like(F) # Inicializa matriz K con ceros, de la misma forma que F
+    for i in range(len(F)):
+        K[i][i] = sum(F[i][:])
+    # Suma los elementos de la fila i-ésima de F y lo asigna a la diagonal de K
+    Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F 
+    C = Kinv @ F # Calcula C multiplicando Kinv y F
     return C
 
 def calcula_B(C,cantidad_de_visitas):
@@ -106,4 +114,5 @@ def calcula_B(C,cantidad_de_visitas):
     B = np.eye(C.shape[0])
     for i in range(cantidad_de_visitas-1):
         # Sumamos las matrices de transición para cada cantidad de pasos
+        ...
     return B
