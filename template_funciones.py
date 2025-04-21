@@ -113,6 +113,5 @@ def calcula_B(C,cantidad_de_visitas):
     # Retorna:Una matriz B que vincula la cantidad de visitas w con la cantidad de primeras visitas v
     B = np.eye(C.shape[0])
     for i in range(cantidad_de_visitas-1):
-        # Sumamos las matrices de transición para cada cantidad de pasos
-        ...
+        B += np.linalg.matrix_power(C, i) # Sumamos las matrices de transición para cada cantidad de pasos
     return B
