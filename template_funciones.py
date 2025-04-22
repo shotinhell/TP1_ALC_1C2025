@@ -97,9 +97,7 @@ def calcula_matriz_C_continua(D):
     D = D.copy()
     F = 1/D
     np.fill_diagonal(F,0)
-    K = np.zeros_like(F) # Inicializa matriz K con ceros, de la misma forma que F
-    for i in range(len(F)):
-        K[i][i] = sum(F[i][:])
+    K = np.diag(F.sum(axis = 1))
     # Suma los elementos de la fila i-ésima de F y lo asigna a la diagonal de K
     Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F 
     C = Kinv @ F # Calcula C multiplicando Kinv y F
