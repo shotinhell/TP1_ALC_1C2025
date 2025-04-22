@@ -52,7 +52,7 @@ def determinante(matriz):
 def inversa(matriz):
     L, U = calculaLU(matriz)
     n = matriz.shape[0]
-    I = np.size(n)
+    I = np.eye(n)
     res = np.zeros_like(matriz)
     for i in range(n):
        e = I[:, i]
