@@ -66,9 +66,7 @@ def calcula_matriz_C(A):
     # Función para calcular la matriz de trancisiones C
     # A: Matriz de adyacencia
     # Retorna la matriz C
-    K = np.zeros_like(A) # Inicializa matriz K con ceros, de la misma forma que A
-    for i in range(len(A)):
-        K[i][i] = sum(A[i][:]) # Suma los elementos de la fila i-ésima de A y lo asigna a la diagonal de K
+    K = np.diag(A.sum(axis = 0))   
     Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de A
     C = Kinv @ A # Calcula C multiplicando Kinv y A
      # Calcula C multiplicando Kinv y A
