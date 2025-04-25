@@ -66,9 +66,14 @@ def calcula_matriz_C(A):
     # Función para calcular la matriz de trancisiones C
     # A: Matriz de adyacencia
     # Retorna la matriz C
-    K = np.diag(A.sum(axis = 0))   
+    K = np.zeros(A.shape) # Inicializamos la matriz K con ceros
+    K = np.diag(A.sum(axis = 1))
+    for i in range(len(K)):
+      if K[i][i] == 0:
+          K[i][i] = len(A) # Si la fila i-ésima de K es cero, le asignamos el número de filas de A
+
     Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de A
-    C = Kinv @ A # Calcula C multiplicando Kinv y A
+    C = Kinv @ A.T # Calcula C multiplicando Kinv y A
      # Calcula C multiplicando Kinv y A
     return C
 
@@ -80,7 +85,8 @@ def calcula_pagerank(A,alfa):
     # Retorna: Un vector p con los coeficientes de page rank de cada museo
     C = calcula_matriz_C(A)
     N = len(A) # Obtenemos el número de museos N a partir de la estructura de la matriz A
-    M = (1 - alfa) * C
+    I = np.eye(N) # Matriz identidad de tamaño N
+    M = I - alfa * C
     L, U = calculaLU(M) # Calculamos descomposición LU a partir de C y d
     b = np.ones(N)
     b = (alfa/N) * b # Vector de 1s, multiplicado por el coeficiente correspondiente usando d y N.
