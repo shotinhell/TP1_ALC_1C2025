@@ -23,11 +23,32 @@ def construye_adyacencia(D,m):
     np.fill_diagonal(A,0) # Borramos diagonal para eliminar autolinks
     return(A)
 
+def matrizPermutacion(matriz):
+    #el objetivo el elemento en la diagonal en la columna i a partir de la fila i sea mas grande que todos
+    #por debajo de la fila i
+    matriz = np.array(matriz, dtype=float)
+    n = matriz.shape[0]
+    res = np.eye(n)
+    
+    for i in range(n):
+        #busco posición del elemento con mayor módulo en la columna i a partir de la fila i
+        fila_maximo = np.argmax(np.abs(matriz[i:n, i])) + i
+        #si el máximo no está en la fila i, cambio las filas de lugar
+        if i != fila_maximo:
+            matriz[[i, fila_maximo], :] = matriz[[fila_maximo, i], :]
+            res[[i, fila_maximo], :] = res[[fila_maximo, i], :]
+            
+    return res
+        
 def calculaLU(matriz):
+    #utilizo la función anterior para permutar la matriz
+    matriz = np.array(matriz, dtype=float)
+    P = matrizPermutacion(matriz)
+    matriz_permutada = P @ matriz
     n = matriz.shape[0]
     m = matriz.shape[1]
     L = np.eye(n,n)
-    U = matriz.copy()
+    U = matriz_permutada.copy()
     if m != n:
         print('La matriz no es cuadrada')
         return
@@ -36,7 +57,7 @@ def calculaLU(matriz):
             for i in range(j + 1, n):
                 L[i, j] = U[i, j] / U[j, j]
                 U[i, :] = U[i, :] - L[i, j] * U[j, :]
-    return L, U
+    return L, U, P
 
 def determinante(matriz):
     _, U = calculaLU(matriz)
@@ -50,14 +71,15 @@ def determinante(matriz):
         return 
     
 def inversa(matriz):
-    L, U = calculaLU(matriz)
+    return np.linalg.inv(matriz) # Usamos la función de numpy para calcular la inversa de la matriz
+    L, U, P = calculaLU(matriz)
     n = matriz.shape[0]
     I = np.eye(n)
     res = np.zeros_like(matriz)
     for i in range(n):
-       e = I[:, i]
-       y = scipy.linalg.solve_triangular(L, e,)
-       x = scipy.linalg.solve_triangular(U, y)
+       e = I[:, i]  
+       y = scipy.linalg.solve_triangular(L, P @ e, lower=True)
+       x = scipy.linalg.solve_triangular(U, y, lower=False)
        res[:, i] = x
        
     return res
@@ -70,13 +92,12 @@ def calcula_matriz_C(A):
     K = np.diag(A.sum(axis = 1))
     for i in range(len(K)):
       if K[i][i] == 0:
-          K[i][i] = len(A) # Si la fila i-ésima de K es cero, le asignamos el número de filas de A
+          K[i][i] = len(A)
 
     Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de A
     C = Kinv @ A.T # Calcula C multiplicando Kinv y A
      # Calcula C multiplicando Kinv y A
     return C
-
     
 def calcula_pagerank(A,alfa):
     # Función para calcular PageRank usando LU
@@ -87,7 +108,7 @@ def calcula_pagerank(A,alfa):
     N = len(A) # Obtenemos el número de museos N a partir de la estructura de la matriz A
     I = np.eye(N) # Matriz identidad de tamaño N
     M = I - alfa * C
-    L, U = calculaLU(M) # Calculamos descomposición LU a partir de C y d
+    L, U, P = calculaLU(M) # Calculamos descomposición LU a partir de C y d
     b = np.ones(N)
     b = (alfa/N) * b # Vector de 1s, multiplicado por el coeficiente correspondiente usando d y N.
     Up = scipy.linalg.solve_triangular(L,b,lower=True) # Primera inversión usando L
@@ -102,6 +123,7 @@ def calcula_matriz_C_continua(D):
     F = 1/D
     np.fill_diagonal(F,0)
     K = np.diag(F.sum(axis = 1))
+
     # Suma los elementos de la fila i-ésima de F y lo asigna a la diagonal de K
     Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F 
     C = Kinv @ F # Calcula C multiplicando Kinv y F
