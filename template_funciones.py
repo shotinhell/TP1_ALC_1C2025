@@ -126,7 +126,7 @@ def calcula_matriz_C_continua(D):
 
     # Suma los elementos de la fila i-ésima de F y lo asigna a la diagonal de K
     Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F 
-    C = Kinv @ F # Calcula C multiplicando Kinv y F
+    C = F.T @ Kinv # Calcula C multiplicando Kinv y F
     return C
 
 def calcula_B(C,cantidad_de_visitas):
