@@ -114,7 +114,7 @@ def calcula_pagerank(A,alfa):
     p = scipy.linalg.solve_triangular(U,Up) # Segunda inversión usando U
     return p
 
-def calcula_matriz_C_continua(D): 
+def calcula_matriz_C_continua(D):
     # Función para calcular la matriz de trancisiones C
     # D: Matriz de adyacencia
     # Retorna la matriz C en versión continua
@@ -124,8 +124,8 @@ def calcula_matriz_C_continua(D):
     K = np.diag(F.sum(axis = 1))
 
     # Suma los elementos de la fila i-ésima de F y lo asigna a la diagonal de K
-    Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F 
-    C = F.T @ Kinv # Calcula C multiplicando Kinv y F
+    Kinv = func.inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F
+    C = F @ Kinv # Calcula C multiplicando Kinv y F
     return C
 
 def calcula_B(C,cantidad_de_visitas):
@@ -135,7 +135,7 @@ def calcula_B(C,cantidad_de_visitas):
     # cantidad_de_visitas: Cantidad de pasos en la red dado por los visitantes. Indicado como r en el enunciado
     # Retorna:Una matriz B que vincula la cantidad de visitas w con la cantidad de primeras visitas v
     B = np.eye(C.shape[0])
-    for i in range(cantidad_de_visitas-1):
+    for i in range(1, cantidad_de_visitas):
         B += np.linalg.matrix_power(C, i) # Sumamos las matrices de transición para cada cantidad de pasos
     return B
 
