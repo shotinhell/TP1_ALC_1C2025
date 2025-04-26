@@ -71,11 +71,10 @@ def determinante(matriz):
         return 
     
 def inversa(matriz):
-    return np.linalg.inv(matriz) # Usamos la función de numpy para calcular la inversa de la matriz
     L, U, P = calculaLU(matriz)
     n = matriz.shape[0]
     I = np.eye(n)
-    res = np.zeros_like(matriz)
+    res = np.zeros_like(matriz, dtype=float)
     for i in range(n):
        e = I[:, i]  
        y = scipy.linalg.solve_triangular(L, P @ e, lower=True)
