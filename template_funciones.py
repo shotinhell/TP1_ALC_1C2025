@@ -124,7 +124,7 @@ def calcula_matriz_C_continua(D):
     K = np.diag(F.sum(axis = 1))
 
     # Suma los elementos de la fila i-ésima de F y lo asigna a la diagonal de K
-    Kinv = func.inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F
+    Kinv = inversa(K) # Calcula inversa de la matriz K, que tiene en su diagonal la suma por filas de F
     C = F @ Kinv # Calcula C multiplicando Kinv y F
     return C
 
