@@ -155,3 +155,22 @@ def cond1(B):
   norma1_B_inv = norma1_matriz(B_inv)
   res = norma1_B * norma1_B_inv
   return res
+
+def graficar_pagerank(pr,museos,barrios,escala,A):
+    pr_copy = pr
+    pr_ratio = 3 # la relacion de tamaño
+    pr_min = pr_copy.min()
+    pr_max = pr_copy.max()
+    pr_diff = pr_max-pr_min
+    #ajustamos para que la diferencia sea mayor
+    pr_copy = (pr_copy - pr_min)*pr_ratio + pr_min
+
+    pr_copy = 2* pr_copy/pr.sum() # Normalizamos para que sume 1
+
+    G = nx.from_numpy_array(A) # Construimos la red a partir de la matriz de adyacencia
+    # Construimos un layout a partir de las coordenadas geográficas
+    G_layout = {i:v for i,v in enumerate(zip(museos.to_crs("EPSG:22184").get_coordinates()['x'],museos.to_crs("EPSG:22184").get_coordinates()['y']))}
+    fig, ax = plt.subplots(figsize=(15*escala, 15*escala)) # Visualización de la red en el mapa
+    barrios.to_crs("EPSG:22184").boundary.plot(color='gray',ax=ax) # Graficamos Los barrios
+    factor_escala = 1e4*escala # Escalamos los nodos 10 mil veces para que sean bien visibles
+    nx.draw_networkx(G,G_layout,node_size = pr_copy*factor_escala, ax=ax,with_labels=False) # Graficamos red
