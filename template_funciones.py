@@ -144,7 +144,7 @@ def norma1_matriz(A):
   return np.max(np.sum(np.abs(A), axis=0))   #valor absoluto de todo A, suma las columnas y toma el max
 
 def calcula_x(A, b): #resuelve Ax=b con LU
-    L, U, P= func.calculaLU(A)
+    L, U, P= calculaLU(A)
     y = scipy.linalg.solve_triangular(L, b, lower=True)
     x = scipy.linalg.solve_triangular(U, y, lower=False)
     return x
@@ -152,7 +152,7 @@ def calcula_x(A, b): #resuelve Ax=b con LU
 def cond1(B):
   #calculo la norma de B, la de su inversa, las multiplico y devuelvo el res
   norma1_B = norma1_matriz(B)
-  B_inv = func.inversa(B)
+  B_inv = inversa(B)
   norma1_B_inv = norma1_matriz(B_inv)
   res = norma1_B * norma1_B_inv
   return res
