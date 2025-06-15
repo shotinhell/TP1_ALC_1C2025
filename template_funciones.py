@@ -106,7 +106,7 @@ def calcula_pagerank(A,alfa):
     C = calcula_matriz_C(A)
     N = len(A) # Obtenemos el número de museos N a partir de la estructura de la matriz A
     I = np.eye(N) # Matriz identidad de tamaño N
-    M = I - alfa * C
+    M = I - (1-alfa) * C
     L, U, P = calculaLU(M) # Calculamos descomposición LU a partir de C y d
     b = np.ones(N)
     b = (alfa/N) * b # Vector de 1s, multiplicado por el coeficiente correspondiente usando d y N.
