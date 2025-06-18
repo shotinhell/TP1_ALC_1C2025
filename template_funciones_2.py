@@ -41,7 +41,7 @@ def calcula_lambda(L,v):
 def calcula_Q(R,v):
     # La funcion recibe R y s y retorna la modularidad (a menos de un factor 2E)
     s = np.sign(v)
-    DosE = np.sum(A)
+    DosE = np.sum(R)
     Q = (1 / (2 * DosE)) * np.dot(s.T, np.dot(R, s))
     return Q
 
