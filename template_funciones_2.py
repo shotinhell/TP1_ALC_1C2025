@@ -45,7 +45,7 @@ def calcula_Q(R,v):
     Q = (1 / (2 * DosE)) * np.dot(s.T, np.dot(R, s))
     return Q
 
-def metpot1(A,tol=1e-8,maxrep=np.Inf):
+def metpot1(A,tol=1e-8,maxrep=np.inf):
    # Recibe una matriz A y calcula su autovalor de mayor módulo, con un error relativo menor a tol y-o haciendo como mucho maxrep repeticiones
    v = np.random.uniform(-1, 1, A.shape[0]) # Generamos un vector de partida aleatorio, entre -1 y 1
    v = v / np.linalg.norm(v) # Lo normalizamos
@@ -72,19 +72,19 @@ def deflaciona(A,tol=1e-8,maxrep=np.inf):
     deflA = A - l1 * np.outer(v1, v1) / np.dot(v1.T, v1) # Sugerencia, usar la funcion outer de numpy
     return deflA
 
-def metpot2(A,v1,l1,tol=1e-8,maxrep=np.Inf):
+def metpot2(A,v1,l1,tol=1e-8,maxrep=np.inf):
    # La funcion aplica el metodo de la potencia para buscar el segundo autovalor de A, suponiendo que sus autovectores son ortogonales
    # v1 y l1 son los primeors autovectores y autovalores de A}
    deflA = deflaciona(A, tol, maxrep)
    return metpot1(deflA,tol,maxrep)
 
 
-def metpotI(A,mu,tol=1e-8,maxrep=np.Inf):
+def metpotI(A,mu,tol=1e-8,maxrep=np.inf):
     # Retorna el primer autovalor de la inversa de A + mu * I, junto a su autovector y si el método convergió.
     X = A + mu * np.eye(A.shape[0])
     return metpot1(func.inversa(X),tol=tol,maxrep=maxrep)
 
-def metpotI2(A,mu,tol=1e-8,maxrep=np.Inf):
+def metpotI2(A,mu,tol=1e-8,maxrep=np.inf):
    # Recibe la matriz A, y un valor mu y retorna el segundo autovalor y autovector de la matriz A, 
    # suponiendo que sus autovalores son positivos excepto por el menor que es igual a 0
    # Retorna el segundo autovector, su autovalor, y si el metodo llegó a converger.
