@@ -19,6 +19,7 @@ import scipy
 import template_funciones as func
 
 
+
 def calcula_L(A):
     # La función recibe la matriz de adyacencia A y calcula la matriz laplaciana
     K = np.diag(np.sum(A, axis=1))
@@ -163,12 +164,28 @@ def modularidad_iterativo(A=None,R=None,nombres_s=None):
                        modularidad_iterativo(A, Rm, nombres_s=[ni for ni, vi in zip(nombres_s, v) if vi < 0])
                 )
 
-def graficar_grafo(museos,barrios,escala,A):
-
+def graficar_grupos(museos, barrios, escala, A, grupos, titulo="Clustering Results"):
+    colors = sns.color_palette("bright", len(grupos)) # Genero una lista de colores de longitud igual a la cantidad de grupos
+    node_colors = ['black'] * len(museos)  # y una de colores para cada nodo con valor inicial 'black', que no pertenece a la paleta
+    for indice, grupo in enumerate(grupos):
+        for node in grupo:
+            node_colors[node] = colors[indice] # Asigno a cada nodo el color del grupo al que pertenece
+    
     G = nx.from_numpy_array(A) # Construimos la red a partir de la matriz de adyacencia
     # Construimos un layout a partir de las coordenadas geográficas
     G_layout = {i:v for i,v in enumerate(zip(museos.to_crs("EPSG:22184").get_coordinates()['x'],museos.to_crs("EPSG:22184").get_coordinates()['y']))}
     fig, ax = plt.subplots(figsize=(15*escala, 15*escala)) # Visualización de la red en el mapa
     barrios.to_crs("EPSG:22184").boundary.plot(color='gray',ax=ax) # Graficamos Los barrios
-    factor_escala = 30*escala # Escalamos los nodos 10 mil veces para que sean bien visibles
-    nx.draw_networkx(G,G_layout,node_size = factor_escala, ax=ax,with_labels=False) # Graficamos red
+    factor_escala = 100 * escala
+    nx.draw_networkx(G, G_layout, 
+                    node_color=node_colors,
+                    node_size=factor_escala, 
+                    ax=ax, 
+                    with_labels=False,
+                    edge_color='lightgray', # asi no se tapan los barrios por las lineas 
+                    alpha=0.8)
+    
+    # Agregar título
+    ax.set_title(titulo, fontsize=16)
+
+    return fig, ax

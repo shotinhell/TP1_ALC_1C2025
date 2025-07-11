@@ -173,4 +173,8 @@ def graficar_pagerank(pr,museos,barrios,escala,A):
     fig, ax = plt.subplots(figsize=(15*escala, 15*escala)) # Visualización de la red en el mapa
     barrios.to_crs("EPSG:22184").boundary.plot(color='gray',ax=ax) # Graficamos Los barrios
     factor_escala = 1e4*escala # Escalamos los nodos 10 mil veces para que sean bien visibles
-    nx.draw_networkx(G,G_layout,node_size = pr_copy*factor_escala, ax=ax,with_labels=False) # Graficamos red
+    nx.draw_networkx(G,
+                     G_layout,
+                     node_size = pr_copy*factor_escala, 
+                     ax=ax,
+                     with_labels=False) # Graficamos red
