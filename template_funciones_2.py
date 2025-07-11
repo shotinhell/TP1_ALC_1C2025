@@ -165,7 +165,14 @@ def modularidad_iterativo(A=None,R=None,nombres_s=None):
                 )
 
 def graficar_grupos(museos, barrios, escala, A, grupos, titulo="Clustering Results"):
-    colors = sns.color_palette("bright", len(grupos)) # Genero una lista de colores de longitud igual a la cantidad de grupos
+    #colors = sns.color_palette("Spectral", len(grupos)) # Genero una lista de colores de longitud igual a la cantidad de grupos
+    #hago una lista con 20 colores, para que no se repitan
+    colors = ["#00929D", "#FFBB00", "#00970A", "#CF0000",
+              '#AA4800', "#FF8FFF", "#A2FF00", "#FF7E61",
+              "#451600", "#8D8D8D", "#6F0072", "#00450A",
+              "#1243B7", "#FF5733", "#CE00C3", "#603566",
+              "#0099FF", "#20E99C", "#700000", "#581845"
+              ]
     node_colors = ['black'] * len(museos)  # y una de colores para cada nodo con valor inicial 'black', que no pertenece a la paleta
     for indice, grupo in enumerate(grupos):
         for node in grupo:
