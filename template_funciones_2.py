@@ -163,3 +163,12 @@ def modularidad_iterativo(A=None,R=None,nombres_s=None):
                        modularidad_iterativo(A, Rm, nombres_s=[ni for ni, vi in zip(nombres_s, v) if vi < 0])
                 )
 
+def graficar_grafo(museos,barrios,escala,A):
+
+    G = nx.from_numpy_array(A) # Construimos la red a partir de la matriz de adyacencia
+    # Construimos un layout a partir de las coordenadas geográficas
+    G_layout = {i:v for i,v in enumerate(zip(museos.to_crs("EPSG:22184").get_coordinates()['x'],museos.to_crs("EPSG:22184").get_coordinates()['y']))}
+    fig, ax = plt.subplots(figsize=(15*escala, 15*escala)) # Visualización de la red en el mapa
+    barrios.to_crs("EPSG:22184").boundary.plot(color='gray',ax=ax) # Graficamos Los barrios
+    factor_escala = 30*escala # Escalamos los nodos 10 mil veces para que sean bien visibles
+    nx.draw_networkx(G,G_layout,node_size = factor_escala, ax=ax,with_labels=False) # Graficamos red
